@@ -2659,8 +2659,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 1698864639}
   headBone: {fileID: 6565249735783197839}
+  leftEyeBone: {fileID: 6565249735783197863}
+  rightEyeBone: {fileID: 6565249735783197857}
   headMaxTurnAngle: 45
   headTurnSpeed: 10
+  eyeTrackingSpeed: 20
+  leftEyeMaxYRotation: 10
+  leftEyeMinYRotation: -180
+  rightEyeMaxYRotation: 180
+  rightEyeMinYRotation: -10
 --- !u!137 &6565249735794539917
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0

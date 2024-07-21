@@ -18,10 +18,10 @@ public class GeckController : MonoBehaviour
 
     // Eye tracking parameters
     [SerializeField] float eyeTrackingSpeed = 10.0f;
-    [SerializeField] float leftEyeMaxYRotation = 45.0f;
-    [SerializeField] float leftEyeMinYRotation = -45.0f;
-    [SerializeField] float rightEyeMaxYRotation = 45.0f;
-    [SerializeField] float rightEyeMinYRotation = -45.0f;
+    [SerializeField] float leftEyeMaxYRotation = 10.0f;
+    [SerializeField] float leftEyeMinYRotation = -180.0f;
+    [SerializeField] float rightEyeMaxYRotation = 180.0f;
+    [SerializeField] float rightEyeMinYRotation = -10.0f;
 
     // All animation code should be in LateUpdate
     // This allows other systems to update the environment first,
@@ -56,6 +56,54 @@ public class GeckController : MonoBehaviour
 
     
     private void EyeTrackingUpdate() {
+        Quaternion targetEyeRotation = Quaternion.LookRotation(target.position - leftEyeBone.position, Vector3.up);
 
+        leftEyeBone.rotation = Quaternion.Slerp(
+            leftEyeBone.rotation,
+            targetEyeRotation,
+            1 - Mathf.Exp(-eyeTrackingSpeed * Time.deltaTime)
+        );
+        
+        rightEyeBone.rotation = Quaternion.Slerp(
+            rightEyeBone.rotation,
+            targetEyeRotation,
+            1 - Mathf.Exp(-eyeTrackingSpeed * Time.deltaTime)
+        );
+
+        float leftEyeCurrentYRotation = leftEyeBone.localEulerAngles.y;
+        float rightEyeCurrentYRotation = rightEyeBone.localEulerAngles.y;
+
+        if (leftEyeCurrentYRotation > 180.0f) {
+            leftEyeCurrentYRotation -= 360.0f;
+        }
+        if (rightEyeCurrentYRotation > 180.0f) {
+            rightEyeCurrentYRotation -= 360.0f;
+        }
+
+        // Clamp the eye rotation to the min and max values
+        float leftEyeClampedYRotation = Mathf.Clamp(
+            leftEyeCurrentYRotation,
+            leftEyeMinYRotation,
+            leftEyeMaxYRotation
+        );
+        
+        float rightEyeClampedYRotation = Mathf.Clamp(
+            rightEyeCurrentYRotation,
+            rightEyeMinYRotation,
+            rightEyeMaxYRotation
+        );
+
+        // Apply the clamped rotation
+        leftEyeBone.localEulerAngles = new Vector3(
+            leftEyeBone.localEulerAngles.x,
+            leftEyeClampedYRotation,
+            leftEyeBone.localEulerAngles.z
+        );
+
+        rightEyeBone.localEulerAngles = new Vector3(
+            rightEyeBone.localEulerAngles.x,
+            rightEyeClampedYRotation,
+            rightEyeBone.localEulerAngles.z
+        );
     }
 }
