@@ -7,28 +7,10 @@ public class GeckController : MonoBehaviour
 {
     // The target, which the head will follow
     [SerializeField] Transform target;
-    
-    [SerializeField] Transform headBone;
-    [SerializeField] Transform leftEyeBone;
-    [SerializeField] Transform rightEyeBone;
 
-    // Head tracking parameters
-    [SerializeField] float headMaxTurnAngle = 45.0f;
-    [SerializeField] float headTurnSpeed = 5.0f;
-
-    // Eye tracking parameters
-    [SerializeField] float eyeTrackingSpeed = 10.0f;
-    [SerializeField] float leftEyeMaxYRotation = 10.0f;
-    [SerializeField] float leftEyeMinYRotation = -180.0f;
-    [SerializeField] float rightEyeMaxYRotation = 180.0f;
-    [SerializeField] float rightEyeMinYRotation = -10.0f;
-
-    // Legs
-    [Header("Legs")]
-    [SerializeField] LegStepper frontLeftLegStepper;
-    [SerializeField] LegStepper frontRightLegStepper;
-    [SerializeField] LegStepper backLeftLegStepper;
-    [SerializeField] LegStepper backRightLegStepper;
+    void Update() {
+        RootMotionUpdate();
+    }
 
     // All animation code should be in LateUpdate
     // This allows other systems to update the environment first,
@@ -42,7 +24,61 @@ public class GeckController : MonoBehaviour
         StartCoroutine(LegUpdateCoroutine());
     }
 
+    #region Motion
+
+    // Moving parameters
+    // How fast we can turn and move full throttle
+    [Header("Motion")]
+    [SerializeField] float turnSpeed;
+    [SerializeField] float moveSpeed;
+    // How fast we will reach the above speeds
+    [SerializeField] float turnAcceleration;
+    [SerializeField] float moveAcceleration;
+    // Try to stay in this range from the target
+    [SerializeField] float minDistToTarget;
+    [SerializeField] float maxDistToTarget;
+    // If we are above this angle from the target, start turning
+    [SerializeField] float maxAngleToTarget;
+
+    // World space velocity
+    Vector3 currentVelocity;
+    float currentAngularVelocity;
+
+    private void RootMotionUpdate() {
+        Vector3 towardTarget = target.position - transform.position;
+        Vector3 towardTargetProjected = Vector3.ProjectOnPlane(towardTarget, Vector3.up);
+
+        float angleToTarget = Vector3.SignedAngle(transform.forward, towardTargetProjected, Vector3.up);
+
+        float targetAngularVelocity = 0.0f;
+
+        // If we hit the max angle, leave the target velocity at 0
+        if (Mathf.Abs(angleToTarget) > maxAngleToTarget) {
+            if (angleToTarget > 0) {
+                targetAngularVelocity = turnSpeed;
+            }
+            else {
+                targetAngularVelocity = -turnSpeed;
+            }
+        }
+
+        currentAngularVelocity = Mathf.Lerp(
+            currentAngularVelocity,
+            targetAngularVelocity,
+            1 - Mathf.Exp(-turnAcceleration * Time.deltaTime)
+        );
+
+        transform.Rotate(0, Time.deltaTime * currentAngularVelocity, 0, Space.World);
+    }
+    #endregion
+
     #region Head Tracking
+
+    [Header("Head Tracking")]
+    [SerializeField] Transform headBone;
+    [SerializeField] float headMaxTurnAngle = 45.0f;
+    [SerializeField] float headTurnSpeed = 5.0f;
+
     private void HeadTrackingUpdate() {
         Quaternion currentLocalRotation = headBone.localRotation;
         headBone.localRotation = Quaternion.identity;
@@ -68,6 +104,18 @@ public class GeckController : MonoBehaviour
     #endregion
     
     #region Eye Tracking
+
+    [Header("Eye Tracking")]
+    [SerializeField] Transform leftEyeBone;
+    [SerializeField] Transform rightEyeBone;
+
+    // Eye tracking parameters
+    [SerializeField] float eyeTrackingSpeed = 10.0f;
+    [SerializeField] float leftEyeMaxYRotation = 10.0f;
+    [SerializeField] float leftEyeMinYRotation = -180.0f;
+    [SerializeField] float rightEyeMaxYRotation = 180.0f;
+    [SerializeField] float rightEyeMinYRotation = -10.0f;
+
     private void EyeTrackingUpdate() {
         Quaternion targetEyeRotation = Quaternion.LookRotation(target.position - leftEyeBone.position, Vector3.up);
 
@@ -122,6 +170,13 @@ public class GeckController : MonoBehaviour
     #endregion
 
     #region Leg Stepping
+
+    [Header("Legs")]
+    [SerializeField] LegStepper frontLeftLegStepper;
+    [SerializeField] LegStepper frontRightLegStepper;
+    [SerializeField] LegStepper backLeftLegStepper;
+    [SerializeField] LegStepper backRightLegStepper;
+
     IEnumerator LegUpdateCoroutine() {
         while (true) {
             do {

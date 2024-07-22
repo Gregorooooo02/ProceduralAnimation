@@ -3343,6 +3343,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1698864639}
+  turnSpeed: 150
+  moveSpeed: 3
+  turnAcceleration: 4
+  moveAcceleration: 2
+  minDistToTarget: 4
+  maxDistToTarget: 10
+  maxAngleToTarget: 10
   headBone: {fileID: 6565249735783197839}
   leftEyeBone: {fileID: 6565249735783197863}
   rightEyeBone: {fileID: 6565249735783197857}
