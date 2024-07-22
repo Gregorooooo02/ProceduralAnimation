@@ -76,4 +76,46 @@ public static class SmoothDamp
             return rhs.currentValue;
         }
     }
+
+    [Serializable]
+    public struct EulerAngles {
+        public UnityEngine.Vector3 currentValue;
+        private UnityEngine.Vector3 pastTarget;
+
+        public EulerAngles(EulerAngles copy) {
+            this.currentValue = copy.currentValue;
+            this.pastTarget = copy.pastTarget;
+        }
+
+        public void Reset(UnityEngine.Vector3 newValue) {
+            currentValue = newValue;
+            pastTarget = newValue;
+        }
+
+        public UnityEngine.Vector3 Step(UnityEngine.Vector3 target, float speed) {
+            target.x = currentValue.x + Mathf.DeltaAngle(currentValue.x, target.x);
+            target.y = currentValue.y + Mathf.DeltaAngle(currentValue.y, target.y);
+            target.z = currentValue.z + Mathf.DeltaAngle(currentValue.z, target.z);
+
+            var deltaTime = Time.deltaTime;
+
+            var t = deltaTime * speed;
+            if (0 == t) return currentValue;
+            else if (t < MaxSpeed) {
+                var v = (target - pastTarget) / t;
+                var f = currentValue - pastTarget + v;
+
+                pastTarget = target;
+
+                return currentValue = target - v + f * Mathf.Exp(-t);
+            }
+            else {
+                return currentValue = target;
+            }
+        }
+
+        public static implicit operator UnityEngine.Vector3(EulerAngles rhs) {
+            return rhs.currentValue;
+        }
+    }
 }
