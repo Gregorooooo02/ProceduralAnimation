@@ -19,12 +19,62 @@ public class GeckController : MonoBehaviour
         HeadTrackingUpdate();
         EyeTrackingUpdate();
         TailUpdate();
+        IdleBobbingUpdate();
     }
 
     void Awake() {
         StartCoroutine(LegUpdateCoroutine());
         TailInitialize();
+        RootMotionInitialize();
     }
+
+    #region Idle
+    
+    [Header("Idle Bobbing")]
+    [SerializeField] Transform rootBone;
+
+    [SerializeField] Vector3 idleRotationAmplitude;
+    [SerializeField] Vector3 idleRotationSpeed;
+    [SerializeField] Vector3 idleRotationCycleOffset;
+    [SerializeField] Vector3 idleMotionAmplitude;
+    [SerializeField] Vector3 idleMotionSpeed;
+
+    [SerializeField] float idleSpeedMultiplier = 1;
+    [SerializeField] float bodyIdleWeightChangeVelocity = 1;
+
+    Vector3 rootHomePos;
+    SmoothDamp.Float bodyIdleAnimWeight;
+
+    void RootMotionInitialize() {
+        rootHomePos = rootBone.localPosition;
+    }
+
+    void IdleBobbingUpdate() {
+        // How much we want the idle bobbing to influence the skeleton
+        float turnSpeedFrac = currentAngularVelocity / turnSpeed;
+        float moveSpeedFrac = currentVelocity.currentValue.magnitude / moveSpeed;   
+
+        float targetIdleAnimWeight = Mathf.Max(1 - turnSpeedFrac * 4, 1 - moveSpeedFrac * 4);
+        targetIdleAnimWeight = Mathf.Clamp01(targetIdleAnimWeight);
+
+        bodyIdleAnimWeight.Step(targetIdleAnimWeight, bodyIdleWeightChangeVelocity);
+
+        // Rotate the root in local space over time
+        rootBone.localEulerAngles = new Vector3(
+            Mathf.Sin(Time.time * idleRotationSpeed.x * idleSpeedMultiplier + idleRotationCycleOffset.x * Mathf.PI * 2) * idleRotationAmplitude.x,
+            Mathf.Sin(Time.time * idleRotationSpeed.y * idleSpeedMultiplier + idleRotationCycleOffset.y * Mathf.PI * 2) * idleRotationAmplitude.y,
+            Mathf.Sin(Time.time * idleRotationSpeed.z * idleSpeedMultiplier + idleRotationCycleOffset.z * Mathf.PI * 2) * idleRotationAmplitude.z
+        ) * bodyIdleAnimWeight;
+
+        // Move the root in local space over time
+        rootBone.localPosition = rootHomePos + new Vector3(
+            Mathf.Sin(Time.time * idleMotionSpeed.x * idleSpeedMultiplier) * idleMotionAmplitude.x,
+            Mathf.Sin(Time.time * idleMotionSpeed.y * idleSpeedMultiplier) * idleMotionAmplitude.y,
+            Mathf.Sin(Time.time * idleMotionSpeed.z * idleSpeedMultiplier) * idleMotionAmplitude.z
+        ) * bodyIdleAnimWeight;
+    }
+
+    #endregion
 
     #region Motion
 
@@ -43,7 +93,7 @@ public class GeckController : MonoBehaviour
     [SerializeField] float maxAngleToTarget;
 
     // World space velocity
-    Vector3 currentVelocity;
+    SmoothDamp.Vector3 currentVelocity;
     float currentAngularVelocity;
 
     private void RootMotionUpdate() {
@@ -82,14 +132,10 @@ public class GeckController : MonoBehaviour
             1 - Mathf.Exp(-turnAcceleration * Time.deltaTime)
         );
 
-        currentVelocity = Vector3.Lerp(
-            currentVelocity,
-            targetVelocity,
-            1 - Mathf.Exp(-moveAcceleration * Time.deltaTime)
-        );
+        currentVelocity.Step(targetVelocity, moveAcceleration);
 
         transform.Rotate(0, Time.deltaTime * currentAngularVelocity, 0, Space.World);
-        transform.position += currentVelocity * Time.deltaTime;
+        transform.position += currentVelocity.currentValue * Time.deltaTime;
     }
     #endregion
 

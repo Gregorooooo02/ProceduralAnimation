@@ -39,5 +39,41 @@ public static class SmoothDamp
         }
     }
 
-    
+    [Serializable]
+    public struct Vector3 {
+        public float x { get { return currentValue.x; } }
+        public float y { get { return currentValue.y; } }
+        public float z { get { return currentValue.z; } }
+
+        public UnityEngine.Vector3 currentValue;
+        public UnityEngine.Vector3 pastTarget;
+
+        public void Reset(UnityEngine.Vector3 newValue) {
+            currentValue = newValue;
+            pastTarget = newValue;
+        }
+
+        public UnityEngine.Vector3 Step(UnityEngine.Vector3 target, float speed) {
+            var deltaTime = Time.deltaTime;
+
+            var t = deltaTime * speed;
+
+            if (0 == t) return currentValue;
+            else if (t < MaxSpeed) {
+                var v = (target - pastTarget) / t;
+                var f = currentValue - pastTarget + v;
+
+                pastTarget = target;
+
+                return currentValue = target - v + f * Mathf.Exp(-t);
+            }
+            else {
+                return currentValue = target;
+            }
+        }
+
+        public static implicit operator UnityEngine.Vector3(Vector3 rhs) {
+            return rhs.currentValue;
+        }
+    }
 }
