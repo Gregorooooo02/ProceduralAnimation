@@ -18,10 +18,12 @@ public class GeckController : MonoBehaviour
     void LateUpdate() {
         HeadTrackingUpdate();
         EyeTrackingUpdate();
+        TailUpdate();
     }
 
     void Awake() {
         StartCoroutine(LegUpdateCoroutine());
+        TailInitialize();
     }
 
     #region Motion
@@ -186,6 +188,37 @@ public class GeckController : MonoBehaviour
             rightEyeBone.localEulerAngles.z
         );
     }
+    #endregion
+
+    #region Tail
+
+    [Header("Tail")]
+    [SerializeField] Transform[] tailBones;
+    [SerializeField] float tailTurnMultiplier;
+    [SerializeField] float tailTurnSpeed;
+
+    Quaternion[] tailHomeLocalRotation;
+
+    SmoothDamp.Float tailRotation;
+
+    void TailInitialize() {
+        // Store default rotation of the tail bones
+        tailHomeLocalRotation = new Quaternion[tailBones.Length];
+
+        for (int i = 0; i < tailHomeLocalRotation.Length; i++) {
+            tailHomeLocalRotation[i] = tailBones[i].localRotation;
+        }
+    }
+
+    void TailUpdate() {
+        tailRotation.Step(-currentAngularVelocity / turnSpeed * tailTurnMultiplier, tailTurnSpeed);
+
+        for (int i = 0; i < tailBones.Length; i++) {
+            Quaternion rotation = Quaternion.Euler(0, tailRotation, 0);
+            tailBones[i].localRotation = tailHomeLocalRotation[i] * rotation;
+        }
+    }
+
     #endregion
 
     #region Leg Stepping

@@ -289,7 +289,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   homeTransform: {fileID: 253269523}
   wantStepAtDistance: 0.6
-  stepDuration: 0.25
+  stepDuration: 0.125
   stepOvershootFraction: 0.75
 --- !u!1 &686390027
 GameObject:
@@ -337,7 +337,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   homeTransform: {fileID: 2010486895}
   wantStepAtDistance: 0.6
-  stepDuration: 0.25
+  stepDuration: 0.125
   stepOvershootFraction: 0.75
 --- !u!1 &705507993
 GameObject:
@@ -666,7 +666,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   homeTransform: {fileID: 158494297}
   wantStepAtDistance: 0.6
-  stepDuration: 0.25
+  stepDuration: 0.125
   stepOvershootFraction: 0.75
 --- !u!1 &1065252357
 GameObject:
@@ -985,7 +985,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   homeTransform: {fileID: 896364019}
   wantStepAtDistance: 0.6
-  stepDuration: 0.25
+  stepDuration: 0.125
   stepOvershootFraction: 0.75
 --- !u!1 &1698864635
 GameObject:
@@ -3351,15 +3351,22 @@ MonoBehaviour:
   maxDistToTarget: 10
   maxAngleToTarget: 10
   headBone: {fileID: 6565249735783197839}
-  leftEyeBone: {fileID: 6565249735783197863}
-  rightEyeBone: {fileID: 6565249735783197857}
   headMaxTurnAngle: 45
   headTurnSpeed: 10
+  leftEyeBone: {fileID: 6565249735783197863}
+  rightEyeBone: {fileID: 6565249735783197857}
   eyeTrackingSpeed: 20
   leftEyeMaxYRotation: 10
   leftEyeMinYRotation: -180
   rightEyeMaxYRotation: 180
   rightEyeMinYRotation: -10
+  tailBones:
+  - {fileID: 6565249735783197827}
+  - {fileID: 6565249735783197853}
+  - {fileID: 6565249735783197855}
+  - {fileID: 6565249735783197849}
+  tailTurnMultiplier: 35
+  tailTurnSpeed: 5
   frontLeftLegStepper: {fileID: 1455383823}
   frontRightLegStepper: {fileID: 686390029}
   backLeftLegStepper: {fileID: 1000386900}
