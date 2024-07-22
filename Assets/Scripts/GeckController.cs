@@ -51,6 +51,7 @@ public class GeckController : MonoBehaviour
         float angleToTarget = Vector3.SignedAngle(transform.forward, towardTargetProjected, Vector3.up);
 
         float targetAngularVelocity = 0.0f;
+        Vector3 targetVelocity = Vector3.zero;
 
         // If we hit the max angle, leave the target velocity at 0
         if (Mathf.Abs(angleToTarget) > maxAngleToTarget) {
@@ -62,13 +63,31 @@ public class GeckController : MonoBehaviour
             }
         }
 
+        if (Mathf.Abs(angleToTarget) < 90) {
+            float distToTarget = Vector3.Distance(transform.position, target.position);
+
+            if (distToTarget > maxDistToTarget) {
+                targetVelocity = moveSpeed * towardTargetProjected.normalized;
+            }
+            else if (distToTarget < minDistToTarget) {
+                targetVelocity = -moveSpeed * towardTargetProjected.normalized;
+            }
+        }
+
         currentAngularVelocity = Mathf.Lerp(
             currentAngularVelocity,
             targetAngularVelocity,
             1 - Mathf.Exp(-turnAcceleration * Time.deltaTime)
         );
 
+        currentVelocity = Vector3.Lerp(
+            currentVelocity,
+            targetVelocity,
+            1 - Mathf.Exp(-moveAcceleration * Time.deltaTime)
+        );
+
         transform.Rotate(0, Time.deltaTime * currentAngularVelocity, 0, Space.World);
+        transform.position += currentVelocity * Time.deltaTime;
     }
     #endregion
 
