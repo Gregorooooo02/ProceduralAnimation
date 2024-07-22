@@ -23,6 +23,13 @@ public class GeckController : MonoBehaviour
     [SerializeField] float rightEyeMaxYRotation = 180.0f;
     [SerializeField] float rightEyeMinYRotation = -10.0f;
 
+    // Legs
+    [Header("Legs")]
+    [SerializeField] LegStepper frontLeftLegStepper;
+    [SerializeField] LegStepper frontRightLegStepper;
+    [SerializeField] LegStepper backLeftLegStepper;
+    [SerializeField] LegStepper backRightLegStepper;
+
     // All animation code should be in LateUpdate
     // This allows other systems to update the environment first,
     // allowing the animation system to adapt to it before the frame is rendered.
@@ -31,6 +38,11 @@ public class GeckController : MonoBehaviour
         EyeTrackingUpdate();
     }
 
+    void Awake() {
+        StartCoroutine(LegUpdateCoroutine());
+    }
+
+    #region Head Tracking
     private void HeadTrackingUpdate() {
         Quaternion currentLocalRotation = headBone.localRotation;
         headBone.localRotation = Quaternion.identity;
@@ -53,8 +65,9 @@ public class GeckController : MonoBehaviour
             1 - Mathf.Exp(-headTurnSpeed * Time.deltaTime)
         );
     }
-
+    #endregion
     
+    #region Eye Tracking
     private void EyeTrackingUpdate() {
         Quaternion targetEyeRotation = Quaternion.LookRotation(target.position - leftEyeBone.position, Vector3.up);
 
@@ -106,4 +119,27 @@ public class GeckController : MonoBehaviour
             rightEyeBone.localEulerAngles.z
         );
     }
+    #endregion
+
+    #region Leg Stepping
+    IEnumerator LegUpdateCoroutine() {
+        while (true) {
+            do {
+                frontLeftLegStepper.TryMove();
+                backRightLegStepper.TryMove();
+
+                yield return null;
+            }
+            while (backRightLegStepper.Moving || frontLeftLegStepper.Moving);
+
+            do {
+                frontRightLegStepper.TryMove();
+                backLeftLegStepper.TryMove();
+
+                yield return null;
+            }
+            while (backLeftLegStepper.Moving || frontRightLegStepper.Moving);
+        }
+    }
+    #endregion
 }
