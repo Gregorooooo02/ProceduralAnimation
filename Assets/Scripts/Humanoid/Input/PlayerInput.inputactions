@@ -2,17 +2,17 @@
     "name": "PlayerInput",
     "maps": [
         {
-            "name": "CharacterControls",
+            "name": "PlayerMovement",
             "id": "b2a5d3b1-6408-4157-a85c-a295d1197336",
             "actions": [
                 {
                     "name": "Movement",
-                    "type": "Value",
+                    "type": "PassThrough",
                     "id": "1509c261-3dc5-49cc-b5af-ce519c8e1e22",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Run",
@@ -26,21 +26,131 @@
             ],
             "bindings": [
                 {
-                    "name": "",
-                    "id": "d8bea7cc-86b3-4bdc-aebc-c698fd5569e4",
-                    "path": "<Gamepad>/leftStick",
+                    "name": "WSAD",
+                    "id": "41947116-7dd6-467d-93a6-ecd1cd4c2676",
+                    "path": "2DVector(mode=2)",
                     "interactions": "",
-                    "processors": "StickDeadzone",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "a6998be4-712f-473e-add8-c96cf06d833a",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
                     "groups": "",
                     "action": "Movement",
                     "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "042eeeb4-8acc-44c1-9d54-b58fdbb5f25a",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "543b8545-c478-49cb-96ab-c5fe9b0fa246",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "812453b0-de48-45bd-a49a-092367edbad1",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Left Stick",
+                    "id": "b096e15e-0f7d-4783-b5d1-d0fe6f927ba0",
+                    "path": "2DVector(mode=2)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": true,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "45542885-8a0b-4c9b-bce9-84eafbd2d532",
+                    "path": "<Gamepad>/leftStick/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "cd386de6-e766-4114-b355-a7a5203987bb",
+                    "path": "<Gamepad>/leftStick/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "fef80f61-6475-4071-929f-9742f99265dc",
+                    "path": "<Gamepad>/leftStick/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "b28dac10-3939-422a-97ff-e218514e2ab5",
+                    "path": "<Gamepad>/leftStick/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 },
                 {
                     "name": "",
                     "id": "18f9f171-5d96-4bca-a855-b2b3cdead191",
                     "path": "<Gamepad>/leftShoulder",
                     "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Run",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "35c3d1f8-dd79-419f-8806-59f0ff7e4099",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Run",
