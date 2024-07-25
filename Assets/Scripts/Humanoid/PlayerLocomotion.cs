@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerLocomotion : MonoBehaviour
 {
@@ -24,12 +25,17 @@ public class PlayerLocomotion : MonoBehaviour
     [Header("Movement Flags")]
     public bool isSprinting;
     public bool isGrounded;
+    public bool isJumping;
 
     [Header("Movement Speeds")]
     [SerializeField] float walkingSpeed = 1.5f;
     [SerializeField] float runningSpeed = 5.0f;
     [SerializeField] float sprintingSpeed = 7.0f;
     [SerializeField] float rotationSpeed = 15.0f;
+
+    [Header("Jumping")]
+    [SerializeField] float jumpHeight = 3.0f;
+    [SerializeField] float gravityIntensity = -15.0f;
 
     private void Awake() {
         animationManager = GetComponent<AnimationManager>();
@@ -50,6 +56,7 @@ public class PlayerLocomotion : MonoBehaviour
     }
 
     private void HandleMovement() {
+        if (isJumping) return;
         moveDirection = cameraObject.forward * inputManager.verticalInput;
         moveDirection += cameraObject.right * inputManager.horizontalInput;
         moveDirection.Normalize();
@@ -76,6 +83,7 @@ public class PlayerLocomotion : MonoBehaviour
     }
 
     private void HandleRotation() {
+        if (isJumping) return;
         Vector3 targetDirection = Vector3.zero;
 
         targetDirection = cameraObject.forward * inputManager.verticalInput;
@@ -99,7 +107,7 @@ public class PlayerLocomotion : MonoBehaviour
         Vector3 rayCastOrigin = transform.position;
         rayCastOrigin.y += rayCastHeightOffset;
 
-        if (!isGrounded) {
+        if (!isGrounded && !isJumping) {
             if (!playerManager.isInteracting) {
                 animationManager.PlayTargetAnimation("Falling", true);
             }
@@ -120,6 +128,19 @@ public class PlayerLocomotion : MonoBehaviour
         }
         else {
             isGrounded = false;
+        }
+    }
+
+    public void HandleJumping() {
+        if (isGrounded) {
+            animationManager.animator.SetBool("isJumping", true);
+            animationManager.PlayTargetAnimation("Jump", false);
+
+            float jumpingVelocity = Mathf.Sqrt(-2.0f * gravityIntensity * jumpHeight);
+            Vector3 playerVelocity = moveDirection;
+            playerVelocity.y = jumpingVelocity;
+
+            playerRigidbody.velocity = playerVelocity;
         }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class AnimationManager : MonoBehaviour
 {
-    private Animator animator;
+    public Animator animator;
 
     private int horizontalHash;
     private int verticalHash;
