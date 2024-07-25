@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 public class InputManager : MonoBehaviour
 {
     private PlayerInput playerInput;
+    private PlayerLocomotion playerLocomotion;
     private AnimationManager animationManager;
 
     [SerializeField] Vector2 movementInput;
@@ -15,16 +16,20 @@ public class InputManager : MonoBehaviour
     public float cameraVerticalInput;
     public float cameraHorizontalInput;
 
-    private float moveAmount;
+    public float moveAmount;
     public float verticalInput;
     public float horizontalInput;
+
+    public bool sprintInput;
     
     private void Awake() {
         animationManager = GetComponent<AnimationManager>();
+        playerLocomotion = GetComponent<PlayerLocomotion>();
     }
 
     public void HandleAllInputs() {
         HandleMovementInput();
+        HandleSprintingInput();
     }
 
     private void HandleMovementInput() {
@@ -36,7 +41,15 @@ public class InputManager : MonoBehaviour
 
         moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
 
-        animationManager.UpdateAnimatorValues(0, moveAmount);
+        animationManager.UpdateAnimatorValues(0, moveAmount, playerLocomotion.isSprinting);
+    }
+
+    private void HandleSprintingInput() {
+        if (sprintInput && moveAmount > 0.5f) {
+            playerLocomotion.isSprinting = true;
+        } else {
+            playerLocomotion.isSprinting = false;
+        }
     }
 
     private void OnEnable() {
@@ -49,6 +62,13 @@ public class InputManager : MonoBehaviour
 
             playerInput.PlayerMovement.Camera.performed += ctx => {
                 cameraInput = ctx.ReadValue<Vector2>();
+            };
+
+            playerInput.PlayerActions.B.performed += ctx => {
+                sprintInput = true;
+            };
+            playerInput.PlayerActions.B.canceled += ctx => {
+                sprintInput = false;
             };
         }
 

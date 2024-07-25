@@ -15,15 +15,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Run",
-                    "type": "Button",
-                    "id": "737c6f8d-eb01-4724-b312-c5a5d60222cf",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Camera",
                     "type": "PassThrough",
                     "id": "f1f5d1fc-db86-4350-8581-b5f6ed8e54c9",
@@ -146,28 +137,6 @@
                 },
                 {
                     "name": "",
-                    "id": "18f9f171-5d96-4bca-a855-b2b3cdead191",
-                    "path": "<Gamepad>/leftShoulder",
-                    "interactions": "Press(behavior=2)",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Run",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "35c3d1f8-dd79-419f-8806-59f0ff7e4099",
-                    "path": "<Keyboard>/leftShift",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Run",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "eddba53c-cc5b-46bc-b829-19156ee0d00b",
                     "path": "<Mouse>/delta",
                     "interactions": "",
@@ -231,6 +200,45 @@
                     "action": "Camera",
                     "isComposite": false,
                     "isPartOfComposite": true
+                }
+            ]
+        },
+        {
+            "name": "PlayerActions",
+            "id": "9baee970-8545-477c-88c2-a48c36e20d8e",
+            "actions": [
+                {
+                    "name": "B",
+                    "type": "Button",
+                    "id": "1b63f778-e287-4464-be89-aea7bddaa361",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "91d13571-cf0f-4c5f-b232-78c0453aa90c",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "B",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "87ff1af4-b30b-4101-b682-99ec648f471b",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "B",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

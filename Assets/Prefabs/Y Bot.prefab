@@ -40,6 +40,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Y Bot
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 83c328cde53e846509ec6a907b3b3586, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 83c328cde53e846509ec6a907b3b3586, type: 3}
       propertyPath: m_Controller
       value: 
@@ -138,6 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6031edc500dc84b4d8371fde53c3f0c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isInteracting: 0
 --- !u!114 &4881916662641279881
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -154,8 +159,10 @@ MonoBehaviour:
   cameraInput: {x: 0, y: 0}
   cameraVerticalInput: 0
   cameraHorizontalInput: 0
+  moveAmount: 0
   verticalInput: 0
   horizontalInput: 0
+  sprintInput: 0
 --- !u!114 &1165025855310438379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,7 +175,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d7804cb270924f49ac15622c6b1b6b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 7
+  inAirTimer: 0
+  leapingVelocity: 3
+  fallingVelocity: 33
+  rayCastHeightOffset: 1
+  maxDistance: 1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 192
+  isSprinting: 0
+  isGrounded: 1
+  walkingSpeed: 1.5
+  runningSpeed: 4
+  sprintingSpeed: 6
   rotationSpeed: 15
 --- !u!114 &1566241585847551
 MonoBehaviour:
