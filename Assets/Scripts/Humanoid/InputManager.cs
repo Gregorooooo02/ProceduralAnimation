@@ -10,8 +10,12 @@ public class InputManager : MonoBehaviour
     private AnimationManager animationManager;
 
     [SerializeField] Vector2 movementInput;
-    private float moveAmount;
+    [SerializeField] Vector2 cameraInput;
 
+    public float cameraVerticalInput;
+    public float cameraHorizontalInput;
+
+    private float moveAmount;
     public float verticalInput;
     public float horizontalInput;
     
@@ -27,6 +31,9 @@ public class InputManager : MonoBehaviour
         verticalInput = movementInput.y;
         horizontalInput = movementInput.x;
 
+        cameraVerticalInput = cameraInput.y;
+        cameraHorizontalInput = cameraInput.x;
+
         moveAmount = Mathf.Clamp01(Mathf.Abs(horizontalInput) + Mathf.Abs(verticalInput));
 
         animationManager.UpdateAnimatorValues(0, moveAmount);
@@ -38,6 +45,10 @@ public class InputManager : MonoBehaviour
             
             playerInput.PlayerMovement.Movement.performed += ctx => {
                 movementInput = ctx.ReadValue<Vector2>();
+            };
+
+            playerInput.PlayerMovement.Camera.performed += ctx => {
+                cameraInput = ctx.ReadValue<Vector2>();
             };
         }
 
